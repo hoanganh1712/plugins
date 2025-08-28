@@ -4,36 +4,34 @@
 
 package io.flutter.plugins.webviewflutter;
 
-import android.webkit.WebView;
-import io.flutter.plugins.webviewflutter.FlutterAssetManager;
-import io.flutter.plugins.webviewflutter.GeneratedAndroidWebView.FlutterAssetManagerHostApi;
+import androidx.annotation.NonNull;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import io.flutter.plugins.webviewflutter.GeneratedAndroidWebView.FlutterAssetManagerHostApi;
 
 /**
- * Host api implementation for {@link WebView}.
+ * Host api implementation for FlutterAssetManager.
  *
- * <p>Handles creating {@link WebView}s that intercommunicate with a paired Dart object.
+ * <p>Bridges calls from Dart (Pigeon) to the Android asset manager used by the plugin.
  */
 public class FlutterAssetManagerHostApiImpl implements FlutterAssetManagerHostApi {
   final FlutterAssetManager flutterAssetManager;
 
   /** Constructs a new instance of {@link FlutterAssetManagerHostApiImpl}. */
-  public FlutterAssetManagerHostApiImpl(FlutterAssetManager flutterAssetManager) {
+  public FlutterAssetManagerHostApiImpl(@NonNull FlutterAssetManager flutterAssetManager) {
     this.flutterAssetManager = flutterAssetManager;
   }
 
   @Override
-  public List<String> list(String path) {
+  @NonNull
+  public List<String> list(@NonNull String path) {
     try {
       String[] paths = flutterAssetManager.list(path);
-
       if (paths == null) {
-        return new ArrayList<>();
+        return Collections.emptyList();
       }
-
       return Arrays.asList(paths);
     } catch (IOException ex) {
       throw new RuntimeException(ex.getMessage());
@@ -41,7 +39,8 @@ public class FlutterAssetManagerHostApiImpl implements FlutterAssetManagerHostAp
   }
 
   @Override
-  public String getAssetFilePathByName(String name) {
+  @NonNull
+  public String getAssetFilePathByName(@NonNull String name) {
     return flutterAssetManager.getAssetFilePathByName(name);
-  }
+    }
 }
