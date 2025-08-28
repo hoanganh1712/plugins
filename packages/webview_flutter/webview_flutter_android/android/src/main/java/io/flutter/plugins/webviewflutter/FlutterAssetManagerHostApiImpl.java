@@ -5,6 +5,7 @@
 package io.flutter.plugins.webviewflutter;
 
 import android.webkit.WebView;
+import io.flutter.plugins.webviewflutter.FlutterAssetManager;
 import io.flutter.plugins.webviewflutter.GeneratedAndroidWebView.FlutterAssetManagerHostApi;
 import java.io.IOException;
 import java.util.ArrayList;
