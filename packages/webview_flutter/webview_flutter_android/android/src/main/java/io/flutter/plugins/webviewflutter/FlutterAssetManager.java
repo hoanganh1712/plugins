@@ -7,12 +7,17 @@ package io.flutter.plugins.webviewflutter;
 import android.content.res.AssetManager;
 import androidx.annotation.NonNull;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import java.io.IOException;
 
-/** Abstraction over Flutter assets used by the webview plugin. */
+/** Abstraction over Flutter assets used by the webview plugin (embedding v2 only). */
 public interface FlutterAssetManager {
   /** Returns the asset file path for a given logical asset name. */
   @NonNull
   String getAssetFilePathByName(@NonNull String name);
+
+  /** Lists asset entries under the given path (delegates to Android AssetManager.list). */
+  @NonNull
+  String[] list(@NonNull String path) throws IOException;
 
   /** Embedding v2 implementation backed by FlutterPlugin.FlutterAssets. */
   final class PluginBindingFlutterAssetManager implements FlutterAssetManager {
@@ -28,8 +33,13 @@ public interface FlutterAssetManager {
     @Override
     @NonNull
     public String getAssetFilePathByName(@NonNull String name) {
-      // Delegate to Flutter's asset resolver
       return flutterAssets.getAssetFilePathByName(name);
+    }
+
+    @Override
+    @NonNull
+    public String[] list(@NonNull String path) throws IOException {
+      return assetManager.list(path);
     }
 
     /** Exposes the raw Android AssetManager when needed elsewhere. */
@@ -39,7 +49,5 @@ public interface FlutterAssetManager {
     }
   }
 
-  // NOTE:
-  // Legacy V1 embedding (Registrar) implementation has been removed to avoid
-  // compile errors on modern Flutter/AGP. Use v2 embedding only.
+  // NOTE: Legacy V1 (Registrar) implementation has been removed.
 }
